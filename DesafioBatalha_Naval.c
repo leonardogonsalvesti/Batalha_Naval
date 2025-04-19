@@ -2,14 +2,65 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define TAM_TABULEIRO 10
+#define TAM_HABILIDADE 5
+#define TAM_NAVIO 3//GERADO ALEATORIAMENTE O LOCAL,VERIFICA SE EXISTE LOCAL DISPONIVEL E ADD NO LOCAL.
+#define QUANT_NAVIO 2 //LOCAIS DOS NAVIOS SÃO GERADOS ALEATORIAMENTE , PODE SER EM Y OU EM X.
+#define DIRECAO_NAVIO  (rand() % 2)
+
+/*
+    REPRESENTAÇÃO: 
+
+        5 - REPRESENTA HABILIDADES.
+        1 - REPRESENTA OS NAVIOS.
+        0 - REPRESENTA A AGUA OU MAR.
+*/
+
+// Função para inserir habilidade no tabuleiro
+void inserir_habilidade(int tabuleiro[TAM_TABULEIRO][TAM_TABULEIRO], int habilidade[TAM_HABILIDADE][TAM_HABILIDADE], int LINHA_x, int COLUNA_y) {
+    for (int i = 0; i < TAM_HABILIDADE; i++) {
+        for (int j = 0; j < TAM_HABILIDADE; j++) {
+            // Verifica se está dentro dos limites do tabuleiro
+            if (i + LINHA_x < TAM_TABULEIRO && j + COLUNA_y < TAM_TABULEIRO) {
+                tabuleiro[i + LINHA_x][j + COLUNA_y] = habilidade[i][j];
+            }
+
+            
+        }
+    }
+}
 int main(){
 
     
-    int tabuleiroNaval[10][10];   
+    int tabuleiroNaval[TAM_TABULEIRO][TAM_TABULEIRO] = {0}; // Inicializa com zeros
+
+    int habilidade_cone[TAM_HABILIDADE][TAM_HABILIDADE] = {
+        {0, 0, 5, 0, 0},
+        {0, 5, 5, 5, 0},
+        {5, 5, 5, 5, 5},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0}
+    };
+    int habilidade_cruz[TAM_HABILIDADE][TAM_HABILIDADE] = {
+        {0, 0, 5, 0, 0},
+        {0, 0, 5, 0, 0},
+        {5, 5, 5, 5, 5},
+        {0, 0, 5, 0, 0},
+        {0, 0, 5, 0, 0}
+    };
+    int habilidade_octaedro[TAM_HABILIDADE][TAM_HABILIDADE] = {
+        {0, 0, 5, 0, 0},
+        {0, 5, 5, 5, 0},
+        {5, 5, 5, 5, 5},
+        {0, 5, 5, 5, 0},
+        {0, 0, 5, 0, 0}
+    };
 
     
+
     //O codigo foi bem feito, então você pode determinar o tamanho do navio e a quantidade sem precisar mudar o codigo
-    int tamanhoNavio = 3, quantidadeNavio = 5;
+    int tamanhoNavio = TAM_NAVIO;
+    int quantidadeNavio = QUANT_NAVIO;
     //gerador de numeros aleatorios para melhor funcionalidade do codigo.
     srand(time(NULL));
 
@@ -31,10 +82,16 @@ int main(){
         int coluna = rand() % 10;
         printf("Sorteio Local Navio |%d|%d|\n",linha,coluna);
         //sorteia se vai ser no angulo x ou y.
-        int direcao =rand() % 2; // Sorteia 0 ou 1   zero vai gerar um navio em x e 1 gera um navio em y. 
+        int direcao =DIRECAO_NAVIO; // Sorteia 0 ou 1   zero vai gerar um navio em x e 1 gera um navio em y. 
         int verificaPosisaoX = coluna;  
-        int verificaPosisaoY = linha;    
-        
+        int verificaPosisaoY = linha;  
+        // Inserir habilidades em posições diferentes do tabuleiro
+
+        //ADD HABILIDADES NO TABULEIRO
+        inserir_habilidade(tabuleiroNaval, habilidade_cone, 0, 0);      // canto superior esquerdo
+        inserir_habilidade(tabuleiroNaval, habilidade_cruz, 0, 5);      // canto superior direito
+        inserir_habilidade(tabuleiroNaval, habilidade_octaedro, 5, 0);  // canto inferior esquerdo  
+            
         //faço a verificação se tem espaços suficientes para gerar um navio de tamos 3 casas, verifico também a posição que vai ser gerado o navio.
         if ((direcao ==0) && (verificaPosisaoX <=(9-tamanhoNavio))){  
             //garante que não tem navio no local          
